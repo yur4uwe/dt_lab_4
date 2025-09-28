@@ -1,7 +1,6 @@
 package randanalysis
 
 import (
-	"fmt"
 	"math"
 	"slices"
 )
@@ -76,17 +75,15 @@ func GeometricMean(data []float64) float64 {
 		return 0
 	}
 
-	product := 1.0
+	logSum := 1.0
 	for _, v := range data {
 		if v <= 0 {
 			return 0
 		}
-		product *= v
+		logSum += math.Log(v)
 	}
 
-	fmt.Println("Product:", product)
-
-	return math.Pow(product, 1.0/float64(len(data)))
+	return math.Exp(logSum / float64(len(data)))
 }
 
 func HarmonicMean(data []float64) float64 {

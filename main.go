@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"graph"
 	"lab/randanalysis"
@@ -42,19 +43,28 @@ func TransformToPillarLabels(vals, freqs []int) []string {
 }
 
 func printfreq(vals, freqs []int) {
+	fmt.Println("Number: Frequency")
 
 	for i := 0; i < len(vals); i++ {
 		idx := slices.Index(vals, i+1)
+		if idx == -1 {
+			continue
+		}
 
 		fmt.Printf("%d: %d\n", vals[idx], freqs[idx])
 	}
 }
 
 func main() {
-	// 5 * 12 = 60
-	num_range := 5
+	rangeflag := flag.Int("range", 60, "Range of random numbers")
+	amountflag := flag.Int("amount", 3000, "Amount of random numbers")
 
-	nums := randint(1, num_range, 200)
+	flag.Parse()
+
+	// 5 * 12 = 60
+	num_range := *rangeflag
+
+	nums := randint(1, num_range, *amountflag)
 	numsf := graph.ToFloatSlice(nums)
 
 	fmt.Println("Mean:", randanalysis.Mean(numsf))

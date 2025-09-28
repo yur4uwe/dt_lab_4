@@ -2,7 +2,7 @@ module lab
 
 go 1.24.0
 
-replace graph => C:/Users/tsus1/go/pkges/graph
+replace graph => C:\Users\Yup4uwe\go\pkges\graph
 
 require graph v0.0.0-00010101000000-000000000000
 
