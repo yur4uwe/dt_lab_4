@@ -5,17 +5,29 @@ import (
 	"slices"
 )
 
-func Mean(data []float64) float64 {
+type function func(float64) float64
+
+func ColhomorovMean(data []float64, f, reversedf function) float64 {
 	if len(data) == 0 {
 		return 0
 	}
 
 	sum := 0.0
 	for _, v := range data {
-		sum += v
+		sum += f(v)
 	}
 
-	return sum / float64(len(data))
+	return reversedf(sum / float64(len(data)))
+}
+
+func Mean(data []float64) float64 {
+	f := func(x float64) float64 {
+		return x
+	}
+
+	reversedf := f
+
+	return ColhomorovMean(data, f, reversedf)
 }
 
 func Mode(data []float64) float64 {
@@ -58,46 +70,41 @@ func Median(data []float64) float64 {
 }
 
 func RMS(data []float64) float64 {
-	if len(data) == 0 {
-		return 0
+	f := func(x float64) float64 {
+		return x * x
 	}
 
-	sum := 0.0
-	for _, v := range data {
-		sum += v * v
+	reversedf := func(x float64) float64 {
+		return math.Sqrt(x)
 	}
 
-	return math.Sqrt(sum / float64(len(data)))
+	return ColhomorovMean(data, f, reversedf)
 }
 
 func GeometricMean(data []float64) float64 {
-	if len(data) == 0 {
-		return 0
-	}
-
-	logSum := 1.0
-	for _, v := range data {
-		if v <= 0 {
+	f := func(x float64) float64 {
+		if x <= 0 {
 			return 0
 		}
-		logSum += math.Log(v)
+		return math.Log(x)
 	}
 
-	return math.Exp(logSum / float64(len(data)))
+	reversedf := func(x float64) float64 {
+		return math.Exp(x)
+	}
+
+	return ColhomorovMean(data, f, reversedf)
 }
 
 func HarmonicMean(data []float64) float64 {
-	if len(data) == 0 {
-		return 0
-	}
-
-	sum := 0.0
-	for _, v := range data {
-		if v == 0 {
+	f := func(x float64) float64 {
+		if x == 0 {
 			return 0
 		}
-		sum += 1 / v
+		return 1 / x
 	}
 
-	return float64(len(data)) / sum
+	reversedf := f
+
+	return ColhomorovMean(data, f, reversedf)
 }
